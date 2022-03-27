@@ -1,5 +1,5 @@
 #include "linspace.h"
-#include "ode_system_classes_virtual.h"
+#include "ode_system_classes.h"
 
 #include <iostream>
 #include <fstream>

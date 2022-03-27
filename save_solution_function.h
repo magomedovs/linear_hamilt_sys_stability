@@ -9,7 +9,7 @@
 //void SaveSolutionIntoFile(const std::vector<Container_T>& x_vec, const std::vector<Var_T>& t_vec, std::string filename);
 
 template <typename Container_T, typename Var_T>
-void SaveSolutionIntoFile(const std::vector<Container_T>& x_vec, const std::vector<Var_T>& t_vec, std::string filename="ode_output.txt") {
+void SaveSolutionIntoFile(const std::vector<Container_T>& x_vec, const std::vector<Var_T>& t_vec, std::string filename="output_ode_sol.txt") {
     if (!x_vec.empty() && !t_vec.empty()) {
         std::ofstream output(filename);
         size_t dim = x_vec[0].size();

@@ -1,6 +1,6 @@
 #include "linspace.h"
 #include "jacobi_am_from_boost.h"
-#include "ode_system_classes_virtual.h"
+#include "ode_system_classes.h"
 #include "integrate_system.h"
 
 #include <iostream>
@@ -36,7 +36,6 @@ int main()
 	IntegrateSystem(obj, x, t1, t2, dt, Integrator_Type::dopri5, true);
 
 	std::cout << x[0] << " " << x[1] << "\n";
-
 
 /*	test for ode class */
 //	const size_t steps_number = 10000;
