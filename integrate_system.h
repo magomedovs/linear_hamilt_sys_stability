@@ -9,11 +9,6 @@
 #include <array>
 #include <cmath>
 
-//const size_t DIM = 2;
-//typedef std::array<double, DIM> state_type;
-
-//typedef std::vector<double> state_type;
-
 template <typename state_type>
 class Push_back_state_time {
 public:

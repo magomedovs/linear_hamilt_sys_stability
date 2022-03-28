@@ -32,7 +32,6 @@ struct Params {
 };
 
 // Base class for oscillations and rotations systems
-template <typename State_Type_T>
 class Base_system {
 public:
     Base_system(double period) : T(period) {}
@@ -60,19 +59,19 @@ public:
        return F_20_func(q1, p1, param.alpha, param.beta);
     }	
 
+	static const size_t DIM = 2;
 	const double T; // period
     const Params param; // parameters
 };
 
 // oscillations. k = k1
-template <typename State_Type_T>
-class Oscillation_system: public Base_system<State_Type_T> {
+class Oscillation_system: public Base_system {
     const double k;
     const double omega;
 public:
-    Oscillation_system() : Base_system<State_Type_T>(M_PI), k(0), omega(0) {}
-    Oscillation_system(double k_new) : Base_system<State_Type_T>(M_PI), k(k_new), omega(omega_func(k)) {}
-    Oscillation_system(double alpha_new, double beta_new, double h_new) : Base_system<State_Type_T>(M_PI, alpha_new, beta_new, h_new),
+    Oscillation_system() : Base_system(M_PI), k(0), omega(0) {}
+    Oscillation_system(double k_new) : Base_system(M_PI), k(k_new), omega(omega_func(k)) {}
+    Oscillation_system(double alpha_new, double beta_new, double h_new) : Base_system(M_PI, alpha_new, beta_new, h_new),
         k(k_func(h_new)), omega(omega_func(k)) {
     }
     double k_func(double h) const {   // -1 < h < 1
@@ -93,7 +92,7 @@ public:
     }
 
 //  x[0] := q_2, x[1] := p_2
-    void operator() (const State_Type_T &x , State_Type_T &dxdt , const double t) {
+    void operator() (const std::array<double, DIM> &x , std::array<double, DIM> &dxdt , const double t) {
 		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2 * this->f_02_func(t) * x[1]);
 		dxdt[1] = -1./omega * (2 * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
     }
@@ -105,14 +104,13 @@ public:
 };
 
 // rotations. k = k2
-template <typename State_Type_T>
-class Rotation_system: public Base_system<State_Type_T> {
+class Rotation_system: public Base_system {
     const double k;
     const double omega;
 public:
-    Rotation_system() : Base_system<State_Type_T>(2 * M_PI), k(0), omega(0) {}
-    Rotation_system(double k_new) : Base_system<State_Type_T>(2 * M_PI), k(k_new), omega(omega_func(k)) {}
-    Rotation_system(double alpha_new, double beta_new, double h_new) : Base_system<State_Type_T>(2 * M_PI, alpha_new, beta_new, h_new),
+    Rotation_system() : Base_system(2 * M_PI), k(0), omega(0) {}
+    Rotation_system(double k_new) : Base_system(2 * M_PI), k(k_new), omega(omega_func(k)) {}
+    Rotation_system(double alpha_new, double beta_new, double h_new) : Base_system(2 * M_PI, alpha_new, beta_new, h_new),
         k(k_func(h_new)), omega(omega_func(k)) {
     }
     double k_func(double h) const { // 1 < h
@@ -133,7 +131,7 @@ public:
     }
 
 //  x[0] := q_2, x[1] := p_2
-    void operator() (const State_Type_T &x , State_Type_T &dxdt , const double t) {
+    void operator() (const std::array<double, DIM> &x , std::array<double, DIM> &dxdt , const double t) {
 		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2 * this->f_02_func(t) * x[1]);
 		dxdt[1] = -1./omega * (2 * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
     }
