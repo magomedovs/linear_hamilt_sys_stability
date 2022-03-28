@@ -37,7 +37,7 @@ template <typename ODE_obj_T, typename state_type>
 void IntegrateSystem(const ODE_obj_T& ode_system_obj, 
 		state_type& x, const double t_begin, const double t_end, const double dt,
 		Integrator_Type integrator_type=Integrator_Type::dopri5, bool save_to_file_flag=false,
-		const double abs_er_tol=1.0e-10, const double rel_er_tol=1.0e-8) {
+		const double abs_er_tol=1.0e-13, const double rel_er_tol=1.0e-12) {
 
 	if (save_to_file_flag) {
 

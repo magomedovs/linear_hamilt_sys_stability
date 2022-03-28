@@ -1,6 +1,4 @@
-#include <Eigen/Dense>
-#include <Eigen/Eigenvalues> // ?
-
+#include "eigenvalues_calc.h"
 #include "linspace.h"
 #include "jacobi_am_from_boost.h"
 #include "ode_system_classes.h"
@@ -15,7 +13,7 @@
 int main()
 {
 /*	test for monodromy matrix */
-	const Oscillation_system obj(0.5, 0.65, 0.5);
+	const Oscillation_system obj(0.5, 0.65, 0.);
 	const size_t DIM(obj.DIM);
 	typedef std::array<double, DIM> state_type;
 
@@ -27,15 +25,7 @@ int main()
 //		std::cout << "\n";
 //	}
 
-	Eigen::Matrix<double, DIM, DIM> eig_mat;
-	for (size_t i = 0; i < DIM; ++i) {
-		for (size_t j = 0; j < DIM; ++j) {
-			eig_mat(i, j) = monodr_mat[i][j];
-		}
-	}
-	Eigen::Matrix<std::complex<double>, DIM, 1> eigenvals( eig_mat.eigenvalues() );
-	std::cout << eigenvals << "\n";
-	std::cout << "abs values: " << std::abs(eigenvals(0)) << " " << std::abs(eigenvals(1)) << "\n";
+	eigenvalues_calc(monodr_mat);
 
 /*	test for ode integration */
 //	Oscillation_system Rotation_system

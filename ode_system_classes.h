@@ -75,26 +75,26 @@ public:
         k(k_func(h_new)), omega(omega_func(k)) {
     }
     double k_func(double h) const {   // -1 < h < 1
-        return std::sqrt((h + 1)/2.);
+        return std::sqrt((h + 1.)/2.);
     }
     double omega_func(double k) const {
-        return M_PI / (2 * boost::math::ellint_1(k));
+        return M_PI / (2. * boost::math::ellint_1(k));
     }
 
     double u_func(double psi) const {
-        return 2 * boost::math::ellint_1(k) / M_PI * psi;
+        return 2. * boost::math::ellint_1(k) / M_PI * psi;
     }
     double q1_func(double u) const {
-        return 2 * std::asin(k * boost::math::jacobi_sn(k, u));
+        return 2. * std::asin(k * boost::math::jacobi_sn(k, u));
     }
     double p1_func(double u) const {
-        return 2 * k * boost::math::jacobi_cn(k, u);
+        return 2. * k * boost::math::jacobi_cn(k, u);
     }
 
 //  x[0] := q_2, x[1] := p_2
     void operator() (const std::array<double, DIM> &x , std::array<double, DIM> &dxdt , const double t) {
-		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2 * this->f_02_func(t) * x[1]);
-		dxdt[1] = -1./omega * (2 * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
+		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2. * this->f_02_func(t) * x[1]);
+		dxdt[1] = -1./omega * (2. * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
     }
 
 //  void getOmega() const {
@@ -108,13 +108,13 @@ class Rotation_system: public Base_system {
     const double k;
     const double omega;
 public:
-    Rotation_system() : Base_system(2 * M_PI), k(0), omega(0) {}
-    Rotation_system(double k_new) : Base_system(2 * M_PI), k(k_new), omega(omega_func(k)) {}
-    Rotation_system(double alpha_new, double beta_new, double h_new) : Base_system(2 * M_PI, alpha_new, beta_new, h_new),
+    Rotation_system() : Base_system(2. * M_PI), k(0), omega(0) {}
+    Rotation_system(double k_new) : Base_system(2. * M_PI), k(k_new), omega(omega_func(k)) {}
+    Rotation_system(double alpha_new, double beta_new, double h_new) : Base_system(2. * M_PI, alpha_new, beta_new, h_new),
         k(k_func(h_new)), omega(omega_func(k)) {
     }
     double k_func(double h) const { // 1 < h
-        return std::sqrt(2./(h + 1));
+        return std::sqrt(2./(h + 1.));
     }
     double omega_func(double k) const {
         return M_PI / (k * boost::math::ellint_1(k));
@@ -124,16 +124,16 @@ public:
         return boost::math::ellint_1(k) / M_PI * psi;
     }
     double q1_func(double u) const {
-        return 2 * jacobi_am(k, u);
+        return 2. * jacobi_am(k, u);
     }
     double p1_func(double u) const {
-        return 2 / k * boost::math::jacobi_dn(k, u);
+        return 2. / k * boost::math::jacobi_dn(k, u);
     }
 
 //  x[0] := q_2, x[1] := p_2
     void operator() (const std::array<double, DIM> &x , std::array<double, DIM> &dxdt , const double t) {
-		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2 * this->f_02_func(t) * x[1]);
-		dxdt[1] = -1./omega * (2 * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
+		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2. * this->f_02_func(t) * x[1]);
+		dxdt[1] = -1./omega * (2. * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
     }
 
 //  void GetK() const {
