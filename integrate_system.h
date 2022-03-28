@@ -9,11 +9,12 @@
 #include <array>
 #include <cmath>
 
-const size_t DIM = 2;
+//const size_t DIM = 2;
+//typedef std::array<double, DIM> state_type;
 
-typedef std::array<double, DIM> state_type;
 //typedef std::vector<double> state_type;
 
+template <typename state_type>
 class Push_back_state_time {
 public:
     std::vector<state_type>& m_states;
@@ -37,7 +38,7 @@ enum class Integrator_Type {
 };
 
 // write saving to file instructions !!!
-template <typename ODE_obj_T>
+template <typename ODE_obj_T, typename state_type>
 void IntegrateSystem(const ODE_obj_T& ode_system_obj, 
 		state_type& x, const double t_begin, const double t_end, const double dt,
 		Integrator_Type integrator_type=Integrator_Type::dopri5, bool save_to_file_flag=false,
@@ -53,22 +54,22 @@ void IntegrateSystem(const ODE_obj_T& ode_system_obj,
 		if (integrator_type == Integrator_Type::dopri5) {
 			typedef runge_kutta_dopri5< state_type > error_stepper_type;
 			integrate_adaptive( make_controlled< error_stepper_type >(abs_er_tol, rel_er_tol),
-                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time(x_vec, t_vec) );
+                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time< state_type >(x_vec, t_vec) );
 		} else if (integrator_type == Integrator_Type::cash_karp54) {
 			typedef runge_kutta_cash_karp54< state_type > error_stepper_type;
 			integrate_adaptive( make_controlled< error_stepper_type >(abs_er_tol, rel_er_tol),
-                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time(x_vec, t_vec) );
+                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time< state_type >(x_vec, t_vec) );
 		} else if (integrator_type == Integrator_Type::rosenbrock4) {
 //			typedef rosenbrock4< state_type > error_stepper_type;
 //			integrate_adaptive( make_controlled< error_stepper_type >(abs_er_tol, rel_er_tol),
-//                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time(x_vec, t_vec) );
+//                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time< state_type >(x_vec, t_vec) );
 		} else { // Integrator_Type::fehlberg78
 			typedef runge_kutta_fehlberg78< state_type > error_stepper_type;
 			integrate_adaptive( make_controlled< error_stepper_type >(abs_er_tol, rel_er_tol),
-                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time(x_vec, t_vec) );
+                ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time< state_type >(x_vec, t_vec) );
 		}
 //		integrate_adaptive( make_controlled< error_stepper_type >(abs_er_tol, rel_er_tol), 
-//				ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time(x_vec, t_vec) );
+//				ode_system_obj, x, t_begin, t_end, dt, Push_back_state_time< state_type >(x_vec, t_vec) );
 	
 		SaveSolutionIntoFile(x_vec, t_vec);
 

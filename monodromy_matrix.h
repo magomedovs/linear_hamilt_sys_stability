@@ -1,12 +1,11 @@
 #ifndef MONODROMY_MATRIX
 #define MONODROMY_MATRIX
 
-#include "ode_system_classes.h"
 #include "integrate_system.h"
 
 #include <array>
 
-template <typename ODE_obj_T>
+template <typename ODE_obj_T, typename state_type, size_t DIM>
 std::array<state_type, DIM> Monodromy_matrix(const ODE_obj_T& ode_system_obj, 
 		Integrator_Type integrator_type=Integrator_Type::dopri5, const double dt=0.0001) {
 

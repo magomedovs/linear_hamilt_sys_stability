@@ -22,11 +22,14 @@ public:
 };
 */
 
+const size_t DIM = 2;
+typedef std::array<double, DIM> state_type;
+
 int main()
 {
 /*	test for monodromy matrix */
 	const Oscillation_system< state_type > obj(0.5, 0.65, -0.5);
-	std::array<state_type, DIM> monodr_mat = Monodromy_matrix(obj);
+	std::array<state_type, DIM> monodr_mat = Monodromy_matrix<Oscillation_system< state_type >, state_type, DIM>(obj);
 	for (size_t i = 0; i < DIM; ++i) {
 		for (size_t j = 0; j < DIM; ++j) {
 			std::cout << monodr_mat[i][j] << " ";
