@@ -45,7 +45,7 @@ void save_fij(const Ode_System_t& obj, double t0, double t1) {
 int main()
 {
 //	Rotation_system Oscillation_system	std::array<double, 2>
-	Rotation_system< std::vector<double> > obj(0.5, 0.7, 2.7);
+	Rotation_system obj(0.5, 0.7, 2.7);
 
 	save_fij(obj, 0, 2. * obj.T);
 
