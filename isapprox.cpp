@@ -1,6 +1,6 @@
 #include "isapprox.h"
 
-bool isapprox(double u, double v, double tolerance = 1.0e-5) {
+bool isapprox(double u, double v, double tolerance) {
     if (u == 0 || v == 0) {
         return (std::abs(u - v) <= tolerance);
     } else {

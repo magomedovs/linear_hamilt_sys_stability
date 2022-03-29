@@ -13,19 +13,18 @@
 int main()
 {
 /*	test for monodromy matrix */
-	const Oscillation_system obj(0.5, 0.65, 0.);
+//	const Oscillation_system obj(0.5, 0.65, 0.);
+	const Rotation_system obj(0.5, 0.85, 1.5);
 	const size_t DIM(obj.DIM);
 	typedef std::array<double, DIM> state_type;
 
-	std::array<state_type, DIM> monodr_mat = Monodromy_matrix<Oscillation_system, DIM>(obj);
-//	for (size_t i = 0; i < DIM; ++i) {
-//		for (size_t j = 0; j < DIM; ++j) {
-//			std::cout << monodr_mat[i][j] << " ";
-//		}
-//		std::cout << "\n";
-//	}
+//	std::array<state_type, DIM> monodr_mat = Monodromy_matrix<Oscillation_system, DIM>(obj);
+	std::array<state_type, DIM> monodr_mat = Monodromy_matrix<Rotation_system, DIM>(obj);
 
-	eigenvalues_calc(monodr_mat);
+//	std::array< std::complex<double>, DIM > eigvalsarr( eigenvalues_calc(monodr_mat) );
+//	std::cout << eigvalsarr[0] << " " << eigvalsarr[1] << "\n";
+
+	stability_investigation(monodr_mat);
 
 /*	test for ode integration */
 //	Oscillation_system Rotation_system

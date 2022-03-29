@@ -3,6 +3,6 @@
 
 #include <cmath>
 
-bool isapprox(double u, double v, double tolerance);
+bool isapprox(double u, double v, double tolerance=1.0e-7);
 
 #endif
