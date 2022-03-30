@@ -10,7 +10,7 @@ T jacobi_am_iter(const T& k, const T& x, T anm1, T bnm1, unsigned N);
 template <class T>
 T jacobi_am(const T& k, const T& x);
 
-// following function is the modified function "jacobi_recurse" from "boost/math/special_functions/jacobi_elliptic.hpp". Arguments "k" and "x" are swapped
+/* The following function is the modified function "jacobi_recurse" from "boost/math/special_functions/jacobi_elliptic.hpp". Arguments "k" and "x" are swapped. */
 template <class T>
 T jacobi_am_iter(const T& k, const T& x, T anm1, T bnm1, unsigned N)
 {

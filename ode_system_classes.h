@@ -11,7 +11,7 @@
 #include <cmath>
 #include <vector>
 
-// rhs functional coefficients for ode system
+/* rhs functional coefficients for ode system */
 double F_20_func(double q1, double p1, double alpha, double beta) {
     return 1./2. * ( (alpha + (beta - alpha) * std::pow(std::sin(q1), 2)) * std::pow(p1, 2) + std::cos(q1) );
 }
@@ -22,7 +22,7 @@ double F_02_func(double q1, double p1, double alpha, double beta) {
     return 1./2. * ( beta + (alpha - beta) * std::pow(std::sin(q1), 2) );
 }
 
-// Parameters of the problem
+/* Parameters of the problem */
 struct Params {
     double alpha;
     double beta;
@@ -31,7 +31,7 @@ struct Params {
     Params(double alpha_new, double beta_new, double h_new) : alpha(alpha_new), beta(beta_new), h(h_new) {}
 };
 
-// Base class for oscillations and rotations systems
+/* Base class for oscillations and rotations systems */
 class Base_system {
 public:
     Base_system(double period) : T(period) {}
@@ -64,7 +64,7 @@ public:
     const Params param; // parameters
 };
 
-// oscillations. k = k1
+/* Oscillations. k = k1 */
 class Oscillation_system: public Base_system {
     const double k;
     const double omega;
@@ -91,7 +91,7 @@ public:
         return 2. * k * boost::math::jacobi_cn(k, u);
     }
 
-//  x[0] := q_2, x[1] := p_2
+	/* x[0] := q_2, x[1] := p_2 */
     void operator() (const std::array<double, DIM> &x , std::array<double, DIM> &dxdt , const double t) {
 		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2. * this->f_02_func(t) * x[1]);
 		dxdt[1] = -1./omega * (2. * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
@@ -103,7 +103,7 @@ public:
 
 };
 
-// rotations. k = k2
+/* Rotations. k = k2 */
 class Rotation_system: public Base_system {
     const double k;
     const double omega;
@@ -130,7 +130,7 @@ public:
         return 2. / k * boost::math::jacobi_dn(k, u);
     }
 
-//  x[0] := q_2, x[1] := p_2
+	/* x[0] := q_2, x[1] := p_2 */
     void operator() (const std::array<double, DIM> &x , std::array<double, DIM> &dxdt , const double t) {
 		dxdt[0] = 1./omega * (this->f_11_func(t) * x[0] + 2. * this->f_02_func(t) * x[1]);
 		dxdt[1] = -1./omega * (2. * this->f_20_func(t) * x[0] + this->f_11_func(t) * x[1]);
