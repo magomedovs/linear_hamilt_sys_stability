@@ -1,4 +1,3 @@
-#include "isapprox.h"
 #include "eigenvalues_calc.h"
 #include "linspace.h"
 #include "jacobi_am_from_boost.h"
@@ -8,24 +7,43 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <array>
 #include <complex>
+#include <string>
+
+template <typename ODE_obj_T, size_t DIM>
+void CalculateAndWriteToFile(std::ofstream& stream, const ODE_obj_T& obj) {
+	typedef std::array<double, DIM> state_type;
+    std::array<state_type, DIM> monodr_mat = Monodromy_matrix<ODE_obj_T, DIM>(obj, Integrator_Type::fehlberg78);
+	std::array< std::complex<double>, DIM > eigvalsarr( eigenvalues_calc(monodr_mat) );
+	Solution_type stability_status = stability_investigation(eigvalsarr);
+	stream << std::fixed << std::setprecision(8);
+	stream << obj.param.alpha << " " 
+		<< obj.param.beta << " "
+		<< obj.param.h << " ";
+	for (const auto& eig : eigvalsarr) {
+		stream << eig << " ";
+	}
+	stream << Solution_type_to_string(stability_status) << "\n";
+}
+
 
 int main()
 {
 /*	test for monodromy matrix */
-	const Oscillation_system obj(0.5, 0.65, -0.5);
-//	const Rotation_system obj(0.5, 0.65, 1.5);
-	const size_t DIM(obj.DIM);
-	typedef std::array<double, DIM> state_type;
+	const Oscillation_system osc_obj1(0.5, 0.65, 0.);
+	const Oscillation_system osc_obj2(0.5, 0.65, -0.5);
+	const Rotation_system rot_obj(0.5, 0.65, 1.5);
 
-	std::array<state_type, DIM> monodr_mat = Monodromy_matrix<Oscillation_system, DIM>(obj, Integrator_Type::fehlberg78);
-//	std::array<state_type, DIM> monodr_mat = Monodromy_matrix<Rotation_system, DIM>(obj, Integrator_Type::fehlberg78);
+	std::ofstream output("output_stability_data.txt");
+	CalculateAndWriteToFile<Oscillation_system, osc_obj1.DIM>(output, osc_obj1);
+	CalculateAndWriteToFile<Oscillation_system, osc_obj2.DIM>(output, osc_obj2);
+	CalculateAndWriteToFile<Rotation_system, rot_obj.DIM>(output, rot_obj);
+	output.close();
 
-	std::array< std::complex<double>, DIM > eigvalsarr( eigenvalues_calc(monodr_mat) );
-//	std::cout << eigvalsarr[0] << " " << eigvalsarr[1] << "\n";
-	
-	stability_investigation(eigvalsarr);
+	return 0;
+}
 
 /*	test for ode integration */
 //	Oscillation_system Rotation_system
@@ -43,5 +61,4 @@ int main()
 //
 //	std::cout << x[0] << " " << x[1] << "\n";
 
-	return 0;
-}
+

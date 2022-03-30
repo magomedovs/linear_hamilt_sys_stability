@@ -8,6 +8,7 @@
 
 #include <array>
 #include <complex>
+#include <string>
 #include <iostream>
 #include <iomanip>
 
@@ -38,6 +39,18 @@ enum class Solution_type {
 	double_plus_one
 };
 
+std::string Solution_type_to_string(Solution_type solution_status) {
+    if (solution_status == Solution_type::unstable) {
+        return "unstable";
+    } else if (solution_status == Solution_type::stable) {
+        return "stable";
+    } else if (solution_status == Solution_type::double_minus_one) {
+        return "double_minus_one";
+    } else {
+        return "double_plus_one";
+    }
+}
+
 template <size_t DIM>
 void printEig(const std::array< std::complex<double>, DIM >& eigenvals) {
 	for (const auto& eig : eigenvals) {
@@ -49,8 +62,7 @@ template <size_t DIM>
 Solution_type stability_investigation(const std::array< std::complex<double>, DIM >& eigenvals) {
 //	std::cout << std::fixed << std::setprecision(8);
 	for (size_t i = 0; i < DIM; ++i) {
-		if ( !isapprox( std::abs(eigenvals[i]), 1.0 ) ) {
-			/* unstable case */
+		if ( !isapprox( std::abs(eigenvals[i]), 1.0 ) ) { // unstable case
 //			printEig(eigenvals);
 //			std::cout << "unstable" << "\n";
 			return Solution_type::unstable;
