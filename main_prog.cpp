@@ -12,6 +12,10 @@
 #include <complex>
 #include <string>
 
+const size_t PARAM_W = 14;
+const size_t EIG_W = 32;
+const size_t STABIL_STAT_W = 19;
+
 template <typename ODE_obj_T, size_t DIM>
 void CalculateAndWriteToFile(std::ofstream& stream, const ODE_obj_T& obj) {
 	typedef std::array<double, DIM> state_type;
@@ -19,27 +23,34 @@ void CalculateAndWriteToFile(std::ofstream& stream, const ODE_obj_T& obj) {
 	std::array< std::complex<double>, DIM > eigvalsarr( eigenvalues_calc(monodr_mat) );
 	Solution_type stability_status = stability_investigation(eigvalsarr);
 	stream << std::fixed << std::setprecision(8);
-	stream << obj.param.alpha << " " 
-		<< obj.param.beta << " "
-		<< obj.param.h << " ";
+	stream << std::setw(PARAM_W) << obj.param.alpha << " " 
+		<< std::setw(PARAM_W) << obj.param.beta << " "
+		<< std::setw(PARAM_W) << obj.param.h << " ";
 	for (const auto& eig : eigvalsarr) {
-		stream << eig << " ";
+		stream << std::setw(EIG_W) << eig << " ";
 	}
-	stream << Solution_type_to_string(stability_status) << "\n";
+	stream << std::setw(STABIL_STAT_W) << Solution_type_to_string(stability_status) << "\n";
 }
 
 
 int main()
 {
-/*	test for monodromy matrix */
 	const Oscillation_system osc_obj1(0.5, 0.65, 0.);
 	const Oscillation_system osc_obj2(0.5, 0.65, -0.5);
 	const Rotation_system rot_obj(0.5, 0.65, 1.5);
 
 	std::ofstream output("output_stability_data.txt");
+	output << std::setw(PARAM_W) << "alpha" << " "
+		<< std::setw(PARAM_W) << "beta" << " "
+		<< std::setw(PARAM_W) << "h" << " "
+		<< std::setw(EIG_W) << "eigenvalue_1" << " "
+		<< std::setw(EIG_W) << "eigenvalue_2" << " "
+		<< std::setw(STABIL_STAT_W) << "stability_status" << "\n";
+
 	CalculateAndWriteToFile<Oscillation_system, osc_obj1.DIM>(output, osc_obj1);
 	CalculateAndWriteToFile<Oscillation_system, osc_obj2.DIM>(output, osc_obj2);
 	CalculateAndWriteToFile<Rotation_system, rot_obj.DIM>(output, rot_obj);
+	
 	output.close();
 
 	return 0;
