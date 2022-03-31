@@ -13,7 +13,7 @@
 #include <string>
 
 const size_t PARAM_W = 14;
-const size_t EIG_W = 32;
+const size_t EIG_W = 34;
 const size_t STABIL_STAT_W = 19;
 
 template <typename ODE_obj_T, size_t DIM>
@@ -35,9 +35,19 @@ void CalculateAndWriteToFile(std::ofstream& stream, const ODE_obj_T& obj) {
 
 int main()
 {
-	const Oscillation_system osc_obj1(0.5, 0.65, 0.);
-	const Oscillation_system osc_obj2(0.5, 0.65, -0.5);
-	const Rotation_system rot_obj(0.5, 0.65, 1.5);
+	const size_t BETA_P_NUM = 5;
+	const size_t H_OSC_P_NUM = 5;
+	const size_t H_ROT_P_NUM = 5;
+
+	const double alpha = 0.5;
+	std::array<double, BETA_P_NUM> beta_span;
+	linspace(0.35, 0.95, beta_span);
+	
+	const double SHIFT = 1.0e-3;
+	std::array<double, H_OSC_P_NUM> h_osc_span;
+	linspace(-1. + SHIFT, 1. - SHIFT, h_osc_span);
+	std::array<double, H_ROT_P_NUM> h_rot_span;
+	linspace(1. + SHIFT, 7., h_rot_span);
 
 	std::ofstream output("output_stability_data.txt");
 	output << std::setw(PARAM_W) << "alpha" << " "
@@ -47,15 +57,32 @@ int main()
 		<< std::setw(EIG_W) << "eigenvalue_2" << " "
 		<< std::setw(STABIL_STAT_W) << "stability_status" << "\n";
 
-	CalculateAndWriteToFile<Oscillation_system, osc_obj1.DIM>(output, osc_obj1);
-	CalculateAndWriteToFile<Oscillation_system, osc_obj2.DIM>(output, osc_obj2);
-	CalculateAndWriteToFile<Rotation_system, rot_obj.DIM>(output, rot_obj);
-	
+	for (const double beta : beta_span) {
+		for (const double h : h_osc_span) {
+			const Oscillation_system osc_obj(alpha, beta, h);
+			CalculateAndWriteToFile<Oscillation_system, osc_obj.DIM>(output, osc_obj);
+		}
+		for (const double h : h_rot_span) {
+		    const Rotation_system rot_obj(alpha, beta, h);
+		    CalculateAndWriteToFile<Rotation_system, rot_obj.DIM>(output, rot_obj);
+		}
+	}
+
 	output.close();
 
 	return 0;
 }
 
+/*
+	const Oscillation_system osc_obj1(0.5, 0.65, 0.);
+	const Oscillation_system osc_obj2(0.5, 0.65, -0.5);
+	const Rotation_system rot_obj(0.5, 0.65, 1.5);
+
+	CalculateAndWriteToFile<Oscillation_system, osc_obj1.DIM>(output, osc_obj1);
+	CalculateAndWriteToFile<Oscillation_system, osc_obj2.DIM>(output, osc_obj2);
+	CalculateAndWriteToFile<Rotation_system, rot_obj.DIM>(output, rot_obj);
+*/	
+	
 /*	test for ode integration */
 //	Oscillation_system Rotation_system
 //	typedef std::array<double, Base_system::DIM> state_type;
