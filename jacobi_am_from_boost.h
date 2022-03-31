@@ -8,7 +8,7 @@ template <class T>
 T jacobi_am_iter(const T& k, const T& x, T anm1, T bnm1, unsigned N);
 
 template <class T>
-T jacobi_am(const T& k, const T& x);
+T jacobi_am(const T& k, const T& u);
 
 /* The following function is the modified function "jacobi_recurse" from "boost/math/special_functions/jacobi_elliptic.hpp". Arguments "k" and "x" are swapped. */
 template <class T>
@@ -29,15 +29,22 @@ T jacobi_am_iter(const T& k, const T& x, T anm1, T bnm1, unsigned N)
 }
 
 template <class T>
-T jacobi_am(const T& k, const T& x) {
-    const T k1 = 1 - k;
+T jacobi_am(const T& k, const T& u) {
+	if ( k == static_cast<T>(0.0) ) {
+		return u;
+	}
+	if ( k == static_cast<T>(1.0) ) {
+		return 2 * std::atan( std::exp(u) ) - M_PI_2;
+	}
+
+	const T k1 = 1 - k;
     const T m = k*k;
     const T m1 = 1 - m;
 
     const T a = 1;
     const T b = std::sqrt(m1);
     const unsigned N = 0;
-    return jacobi_am_iter(k, x, a, b, N);
+    return jacobi_am_iter(k, u, a, b, N);
 }
 
 #endif
