@@ -39,7 +39,7 @@ int main()
 	const size_t H_OSC_P_NUM = 20;
 	const size_t H_ROT_P_NUM = 50;
 
-	const double alpha = 0.3;
+	const double alpha = 0.4;
 	std::array<double, BETA_P_NUM> beta_span;
 	linspace(BetaLeftConstrCalc(alpha) + 0.01, BetaRightConstrCalc(alpha) - 0.01, beta_span);
 	
@@ -49,7 +49,8 @@ int main()
 	std::array<double, H_ROT_P_NUM> h_rot_span;
 	linspace(1. + SHIFT, 7., h_rot_span);
 
-	std::ofstream output("output_stability_data.txt");
+	std::string filename = "output_stability_data_alpha" + std::to_string(alpha) + ".txt";
+	std::ofstream output(filename);
 	output << std::setw(PARAM_W) << "alpha" << " "
 		<< std::setw(PARAM_W) << "beta" << " "
 		<< std::setw(PARAM_W) << "h" << " "
