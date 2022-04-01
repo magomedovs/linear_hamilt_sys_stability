@@ -22,13 +22,25 @@ double F_02_func(double q1, double p1, double alpha, double beta) {
     return 1./2. * ( beta + (alpha - beta) * std::pow(std::sin(q1), 2) );
 }
 
+/* Functions for calculation of the left and right constraints of the parameter beta depending on the parameter alpha */
+double BetaLeftConstrCalc(double alpha) {
+	return alpha / (alpha + 1);
+}
+double BetaRightConstrCalc(double alpha) {
+	return alpha / std::abs(alpha - 1);
+}
+
 /* Parameters of the problem */
 struct Params {
-    double alpha;
-    double beta;
-    double h;
+    double alpha;	// > 0 and != 1
+    double beta;	// > 0
+    double h;	// > -1
+
+	double beta_left_constraint;
+	double beta_right_constraint;
     Params() {}
-    Params(double alpha_new, double beta_new, double h_new) : alpha(alpha_new), beta(beta_new), h(h_new) {}
+    Params(double alpha_new, double beta_new, double h_new) : alpha(alpha_new), beta(beta_new), h(h_new), 
+	beta_left_constraint( BetaLeftConstrCalc(alpha) ), beta_right_constraint( BetaRightConstrCalc(alpha) ) {}
 };
 
 /* Base class for oscillations and rotations systems */

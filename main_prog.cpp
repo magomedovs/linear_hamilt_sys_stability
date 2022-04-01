@@ -41,7 +41,7 @@ int main()
 
 	const double alpha = 0.5;
 	std::array<double, BETA_P_NUM> beta_span;
-	linspace(0.35, 0.95, beta_span);
+	linspace(BetaLeftConstrCalc(alpha) + 0.01, BetaRightConstrCalc(alpha) - 0.01, beta_span);
 	
 	const double SHIFT = 1.0e-3;
 	std::array<double, H_OSC_P_NUM> h_osc_span;
@@ -69,6 +69,13 @@ int main()
 	}
 
 	output.close();
+/*
+	const Oscillation_system osc_obj(0.5, 0.65, 0.);
+	std::cout << osc_obj.param.beta_left_constraint << " " << osc_obj.param.beta_right_constraint << "\n";
+
+	const Rotation_system rot_obj(0.5, 0.65, 1.5);
+	std::cout << rot_obj.param.beta_left_constraint << " " << rot_obj.param.beta_right_constraint << "\n";
+*/
 
 	return 0;
 }
