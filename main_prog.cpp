@@ -39,7 +39,7 @@ int main()
 	const size_t H_OSC_P_NUM = 20;
 	const size_t H_ROT_P_NUM = 50;
 
-	const double alpha = 0.5;
+	const double alpha = 0.3;
 	std::array<double, BETA_P_NUM> beta_span;
 	linspace(BetaLeftConstrCalc(alpha) + 0.01, BetaRightConstrCalc(alpha) - 0.01, beta_span);
 	
