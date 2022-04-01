@@ -13,7 +13,7 @@ if (os.path.exists(filename)):
 	fig, ax = plt.subplots(nrows=1, ncols=1)
 	
 	colors = [color_dict[stab_stat] for stab_stat in df['stability_status']]
-	ax.scatter(df['beta'], df['h'], c=colors, linewidths=0.1)
+	ax.scatter(df['beta'], df['h'], c=colors, s=6, marker='o')
 	
 	ax.grid(True)
 	plt.show()

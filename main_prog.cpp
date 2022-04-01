@@ -35,11 +35,11 @@ void CalculateAndWriteToFile(std::ofstream& stream, const ODE_obj_T& obj) {
 
 int main()
 {
-	const size_t BETA_P_NUM = 50;
-	const size_t H_OSC_P_NUM = 20;
-	const size_t H_ROT_P_NUM = 50;
+	const size_t BETA_P_NUM = 120;
+	const size_t H_OSC_P_NUM = 41;
+	const size_t H_ROT_P_NUM = 101;
 
-	const double alpha = 0.4;
+	const double alpha = 0.5;
 	std::array<double, BETA_P_NUM> beta_span;
 	linspace(BetaLeftConstrCalc(alpha) + 0.01, BetaRightConstrCalc(alpha) - 0.01, beta_span);
 	
