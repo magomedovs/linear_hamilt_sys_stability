@@ -45,6 +45,25 @@ void WriteToFile(const std::array<double, DATA_SIZE>& alpha_vec, const std::arra
     output.close();
 }
 
+template <typename ODE_obj_T, size_t DIM>
+void CalculateForPoint(const ODE_obj_T& obj) {
+    typedef std::array<double, DIM> state_type;
+    std::array<state_type, DIM> monodr_mat = Monodromy_matrix<ODE_obj_T, DIM>(obj, Integrator_Type::fehlberg78);
+    std::array< std::complex<double>, DIM > eigvalsarr( eigenvalues_calc(monodr_mat) );
+    Solution_type stability_status = stability_investigation(eigvalsarr);
+
+	std::cout << "alpha = " << obj.param.alpha << "\n"
+		<< "beta = " << obj.param.beta << "\n"
+		<< "h = " << obj.param.h << "\n";
+
+	std::cout << "eigenvalues : ";
+	for (const auto& eig : eigvalsarr) {
+		std::cout << eig << " ";
+    }
+	std::cout << "\n";
+	std::cout << "status : " << Solution_type_to_string(stability_status) << "\n";
+}
+
 template <typename ODE_obj_T, size_t DIM, size_t DATA_SIZE>
 void Calculate(const ODE_obj_T& obj,
         std::array< std::complex<double>, DATA_SIZE >& eig1_vec, std::array< std::complex<double>, DATA_SIZE >& eig2_vec,
@@ -59,7 +78,7 @@ void Calculate(const ODE_obj_T& obj,
 }
 
 template <size_t BETA_P_NUM, size_t H_OSC_P_NUM, size_t H_ROT_P_NUM>
-void CalculateAndWriteToFile(const double alpha) { //const size_t BETA_P_NUM, const size_t H_OSC_P_NUM, const size_t H_ROT_P_NUM) {
+void CalculateAndWriteToFile(const double alpha) { 
 
     const size_t DATA_SIZE = BETA_P_NUM * (H_OSC_P_NUM + H_ROT_P_NUM);
 
@@ -83,7 +102,7 @@ void CalculateAndWriteToFile(const double alpha) { //const size_t BETA_P_NUM, co
             beta_vec[i] = beta;
             h_vec[i] = h;
             const Oscillation_system osc_obj(alpha, beta, h);
-            Calculate<Oscillation_system, osc_obj.DIM, DATA_SIZE>(osc_obj, eig1_vec, eig2_vec, stab_stat, i);
+            Calculate<Oscillation_system, Base_system::DIM, DATA_SIZE>(osc_obj, eig1_vec, eig2_vec, stab_stat, i);
             ++i;
         }
         for (const double h : h_rot_span) {
@@ -91,7 +110,7 @@ void CalculateAndWriteToFile(const double alpha) { //const size_t BETA_P_NUM, co
             beta_vec[i] = beta;
             h_vec[i] = h;
             const Rotation_system rot_obj(alpha, beta, h);
-            Calculate<Rotation_system, rot_obj.DIM, DATA_SIZE>(rot_obj, eig1_vec, eig2_vec, stab_stat, i);
+            Calculate<Rotation_system, Base_system::DIM, DATA_SIZE>(rot_obj, eig1_vec, eig2_vec, stab_stat, i);
             ++i;
         }
     }
