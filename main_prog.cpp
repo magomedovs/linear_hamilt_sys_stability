@@ -4,7 +4,7 @@
 
 int main()
 {
-	const double alpha = 0.33;
+	const double alpha = 0.3;
 	
 	const size_t BETA_P_NUM = 120;
 	const size_t H_OSC_P_NUM = 41;

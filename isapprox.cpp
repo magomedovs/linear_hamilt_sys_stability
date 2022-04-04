@@ -1,3 +1,4 @@
+#include <cmath>
 #include "isapprox.h"
 
 bool isapprox(double u, double v, double tolerance) {
