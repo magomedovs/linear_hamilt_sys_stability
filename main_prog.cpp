@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <string>
 
 int main()
 {
@@ -13,15 +14,22 @@ int main()
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha);
+//	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha);
 
-//	const Rotation_system obj(0.5, 0.85, 1.5);
-//	CalculateForPoint<Rotation_system, obj.DIM>(obj);
+	const Rotation_system obj(0.5, 0.7, 2.5);
+	CalculateForPoint<Rotation_system, obj.DIM>(obj);
 
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	
-	std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::seconds> (end - begin).count() << "[s]" << std::endl;
-	std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::minutes> (end - begin).count() << "[min]" << std::endl;
+	int s_dur = std::chrono::duration_cast<std::chrono::seconds> (end - begin).count();
+	int ms_dur = std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count();
+
+	std::stringstream time_difference;
+	time_difference << "Time difference = " 
+		<< s_dur / 60 << " [min] : " 
+		<< s_dur % 60 << " [s] : " 
+		<< ms_dur % 1000 << " [ms]";
+	std::cout << time_difference.str() << "\n";
 	
 	return 0;
 }
