@@ -110,7 +110,7 @@ void CalcThread(double alpha, std::vector<double>& beta_vec, std::vector<double>
 }
 
 template <size_t BETA_P_NUM, size_t H_OSC_P_NUM, size_t H_ROT_P_NUM>
-void CalculateAndWriteToFile(const double alpha) { 
+void CalculateAndWriteToFile(const double alpha, size_t NUM_OF_THREADS = 4) { 
 
     const size_t DATA_SIZE = BETA_P_NUM * (H_OSC_P_NUM + H_ROT_P_NUM);
 
@@ -129,7 +129,7 @@ void CalculateAndWriteToFile(const double alpha) {
     std::vector< std::complex<double> > eig1_vec(DATA_SIZE), eig2_vec(DATA_SIZE);
     std::vector<std::string> stab_stat(DATA_SIZE);
 
-	const size_t NUM_OF_THREADS = 4;
+//	const size_t NUM_OF_THREADS = 4;
 	std::vector< std::thread > threads(NUM_OF_THREADS);
 
 	std::vector< std::pair<size_t, size_t> > intervals(NUM_OF_THREADS);

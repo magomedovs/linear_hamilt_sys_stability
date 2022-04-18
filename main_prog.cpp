@@ -14,7 +14,8 @@ int main()
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha);
+	const size_t NUM_OF_THREADS = 8;
+	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha, NUM_OF_THREADS);
 
 //	const Rotation_system obj(0.5, 0.7, 2.5);
 //	CalculateForPoint<Rotation_system, obj.DIM>(obj);
