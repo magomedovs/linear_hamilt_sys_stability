@@ -13,6 +13,8 @@
 #include <vector>
 #include <complex>
 #include <string>
+#include <thread>
+#include <utility>
 
 const size_t PARAM_W = 14;
 const size_t EIG_W = 34;
@@ -36,12 +38,6 @@ void CalculateForPoint(const ODE_obj_T& obj) {
 	std::cout << "\n";
 	std::cout << "status : " << Solution_type_to_string(stability_status) << "\n";
 }
-
-//template <size_t DATA_SIZE>
-//void WriteToFile(const std::array<double, DATA_SIZE>& alpha_vec, const std::array<double, DATA_SIZE>& beta_vec,
-//        const std::array<double, DATA_SIZE>& h_vec,
-//        const std::array< std::complex<double>, DATA_SIZE >& eig1_vec, const std::array< std::complex<double>, DATA_SIZE >& eig2_vec,
-//        const std::array<std::string, DATA_SIZE>& stab_stat) {
 
 template <typename T>
 void WriteToFile(const std::vector<T>& alpha_vec, const std::vector<T>& beta_vec,
@@ -73,11 +69,6 @@ void WriteToFile(const std::vector<T>& alpha_vec, const std::vector<T>& beta_vec
     output.close();
 }
 
-//template <typename ODE_obj_T, size_t DIM, size_t DATA_SIZE>
-//void Calculate(const ODE_obj_T& obj,
-//        std::array< std::complex<double>, DATA_SIZE >& eig1_vec, std::array< std::complex<double>, DATA_SIZE >& eig2_vec,
-//        std::array<std::string, DATA_SIZE>& stab_stat, size_t i) {
-
 template <typename ODE_obj_T, size_t DIM>
 void Calculate(const ODE_obj_T& obj,
         std::vector< std::complex<double> >& eig1_vec, std::vector< std::complex<double> >& eig2_vec,
@@ -92,53 +83,79 @@ void Calculate(const ODE_obj_T& obj,
     stab_stat[i] = Solution_type_to_string(stability_status);
 }
 
+//template <typename T>
+void CalcThread(double alpha, std::vector<double>& beta_vec,
+        std::vector<double>& h_vec,
+        std::vector< std::complex<double> >& eig1_vec, std::vector< std::complex<double> >& eig2_vec,
+        std::vector<std::string>& stab_stat, 
+		const std::vector<double>& beta_span, const std::vector<double>& h_osc_span, const std::vector<double>& h_rot_span,
+		std::pair<size_t, size_t> interval, size_t i) {
+
+	for (size_t beta_ind = interval.first; beta_ind < interval.second; ++beta_ind) {
+        for (const double h : h_osc_span) {
+            beta_vec[i] = beta_span[beta_ind];
+            h_vec[i] = h;
+            const Oscillation_system osc_obj(alpha, beta_span[beta_ind], h);
+            Calculate<Oscillation_system, Base_system::DIM>(osc_obj, eig1_vec, eig2_vec, stab_stat, i);
+            ++i;
+        }
+        for (const double h : h_rot_span) {
+            beta_vec[i] = beta_span[beta_ind];
+            h_vec[i] = h;
+            const Rotation_system rot_obj(alpha, beta_span[beta_ind], h);
+            Calculate<Rotation_system, Base_system::DIM>(rot_obj, eig1_vec, eig2_vec, stab_stat, i);
+            ++i;
+        }
+    }
+
+}
+
 template <size_t BETA_P_NUM, size_t H_OSC_P_NUM, size_t H_ROT_P_NUM>
 void CalculateAndWriteToFile(const double alpha) { 
 
     const size_t DATA_SIZE = BETA_P_NUM * (H_OSC_P_NUM + H_ROT_P_NUM);
 
-//	std::array<double, BETA_P_NUM> beta_span;
     std::vector<double> beta_span(BETA_P_NUM);
     linspace(BetaLeftConstrCalc(alpha) + 0.01, BetaRightConstrCalc(alpha) - 0.01, beta_span);
 
     const double SHIFT = 1.0e-3;
 
-//	std::array<double, H_OSC_P_NUM> h_osc_span;
     std::vector<double> h_osc_span(H_OSC_P_NUM);
     linspace(-1. + SHIFT, 1. - SHIFT, h_osc_span);
  
-//	std::array<double, H_ROT_P_NUM> h_rot_span;
 	std::vector<double> h_rot_span(H_ROT_P_NUM);
     linspace(1. + SHIFT, 7., h_rot_span);
 
-//	std::array<double, DATA_SIZE> alpha_vec, beta_vec, h_vec;
-//	std::array< std::complex<double>, DATA_SIZE > eig1_vec, eig2_vec;
-//	std::array<std::string, DATA_SIZE> stab_stat;
-    std::vector<double> alpha_vec(DATA_SIZE), beta_vec(DATA_SIZE), h_vec(DATA_SIZE);
+    std::vector<double> alpha_vec(DATA_SIZE, alpha), beta_vec(DATA_SIZE), h_vec(DATA_SIZE);
     std::vector< std::complex<double> > eig1_vec(DATA_SIZE), eig2_vec(DATA_SIZE);
     std::vector<std::string> stab_stat(DATA_SIZE);
 
-	size_t i = 0;
-    for (const double beta : beta_span) {
-        for (const double h : h_osc_span) {
-            alpha_vec[i] = alpha;
-            beta_vec[i] = beta;
-            h_vec[i] = h;
-            const Oscillation_system osc_obj(alpha, beta, h);
-//          Calculate<Oscillation_system, Base_system::DIM, DATA_SIZE>(osc_obj, eig1_vec, eig2_vec, stab_stat, i);
-            Calculate<Oscillation_system, Base_system::DIM>(osc_obj, eig1_vec, eig2_vec, stab_stat, i);
-            ++i;
-        }
-        for (const double h : h_rot_span) {
-            alpha_vec[i] = alpha;
-            beta_vec[i] = beta;
-            h_vec[i] = h;
-            const Rotation_system rot_obj(alpha, beta, h);
-//          Calculate<Rotation_system, Base_system::DIM, DATA_SIZE>(rot_obj, eig1_vec, eig2_vec, stab_stat, i);
-            Calculate<Rotation_system, Base_system::DIM>(rot_obj, eig1_vec, eig2_vec, stab_stat, i);
-            ++i;
-        }
-    }
+	const size_t NUM_OF_THREADS = 2;
+	std::vector< std::thread > threads;//(NUM_OF_THREADS);
+
+	std::vector< std::pair<size_t, size_t> > intervals(NUM_OF_THREADS);
+	for (size_t i = 0; i < NUM_OF_THREADS; ++i) {
+		size_t from_ind = i * static_cast<size_t>(BETA_P_NUM / NUM_OF_THREADS);
+		size_t to_ind = (i + 1) * static_cast<size_t>(BETA_P_NUM / NUM_OF_THREADS);
+		
+		if (i == NUM_OF_THREADS - 1) {
+			to_ind = BETA_P_NUM;
+		}
+
+		intervals[i] = std::make_pair(from_ind, to_ind);
+	}
+	
+	for (size_t i = 0; i < NUM_OF_THREADS; ++i) {
+		threads[i] = std::thread(CalcThread, 
+				alpha, std::ref(beta_vec), std::ref(h_vec), 
+				std::ref(eig1_vec), std::ref(eig2_vec), std::ref(stab_stat),
+				std::ref(beta_span), std::ref(h_osc_span), std::ref(h_rot_span),
+				intervals[i], intervals[i].first * (H_OSC_P_NUM + H_ROT_P_NUM));
+	}
+
+	for (size_t i = 0; i < NUM_OF_THREADS; ++i) {
+		threads[i].join();
+	}
 
     WriteToFile(alpha_vec, beta_vec, h_vec, eig1_vec, eig2_vec, stab_stat);
 }

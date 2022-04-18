@@ -14,10 +14,10 @@ int main()
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-//	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha);
+	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha);
 
-	const Rotation_system obj(0.5, 0.7, 2.5);
-	CalculateForPoint<Rotation_system, obj.DIM>(obj);
+//	const Rotation_system obj(0.5, 0.7, 2.5);
+//	CalculateForPoint<Rotation_system, obj.DIM>(obj);
 
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	
