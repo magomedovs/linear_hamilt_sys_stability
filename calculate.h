@@ -83,9 +83,8 @@ void Calculate(const ODE_obj_T& obj,
     stab_stat[i] = Solution_type_to_string(stability_status);
 }
 
-//template <typename T>
-void CalcThread(double alpha, std::vector<double>& beta_vec,
-        std::vector<double>& h_vec,
+// Function
+void CalcThread(double alpha, std::vector<double>& beta_vec, std::vector<double>& h_vec,
         std::vector< std::complex<double> >& eig1_vec, std::vector< std::complex<double> >& eig2_vec,
         std::vector<std::string>& stab_stat, 
 		const std::vector<double>& beta_span, const std::vector<double>& h_osc_span, const std::vector<double>& h_rot_span,
@@ -130,8 +129,8 @@ void CalculateAndWriteToFile(const double alpha) {
     std::vector< std::complex<double> > eig1_vec(DATA_SIZE), eig2_vec(DATA_SIZE);
     std::vector<std::string> stab_stat(DATA_SIZE);
 
-	const size_t NUM_OF_THREADS = 2;
-	std::vector< std::thread > threads;//(NUM_OF_THREADS);
+	const size_t NUM_OF_THREADS = 4;
+	std::vector< std::thread > threads(NUM_OF_THREADS);
 
 	std::vector< std::pair<size_t, size_t> > intervals(NUM_OF_THREADS);
 	for (size_t i = 0; i < NUM_OF_THREADS; ++i) {
