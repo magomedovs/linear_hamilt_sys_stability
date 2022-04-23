@@ -4,7 +4,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-color_dict = {'stable' : 'green', 'unstable' : 'red', 
+#color_dict = {'stable' : 'green', 'unstable' : 'red', 
+#	'double_minus_one' : 'blue', 'double_plus_one' : 'black'}
+
+color_dict = {'stable' : 'white', 'unstable' : 'grey', 
 	'double_minus_one' : 'blue', 'double_plus_one' : 'black'}
 
 filename = sys.argv[1] 
@@ -13,7 +16,7 @@ if (os.path.exists(filename)):
 	fig, ax = plt.subplots(nrows=1, ncols=1)
 	
 	colors = [color_dict[stab_stat] for stab_stat in df['stability_status']]
-	ax.scatter(df['beta'], df['h'], c=colors, s=6, marker='o')
+	ax.scatter(df['beta'], df['h'], c=colors, s=6, marker='s')
 	
 	ax.grid(True)
 	plt.show()

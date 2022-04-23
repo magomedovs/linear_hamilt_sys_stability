@@ -1,21 +1,31 @@
 #include "calculate.h"
 
+#include <vector>
 #include <chrono>
 #include <iostream>
 #include <string>
 
 int main()
 {
-	const double alpha = 0.3;
+//	const double alpha = 0.3;
 	
-	const size_t BETA_P_NUM = 120;
-	const size_t H_OSC_P_NUM = 41;
-	const size_t H_ROT_P_NUM = 101;
+	std::vector<double> alpha_vec{0.3, 0.33, 0.37,
+		0.41, 0.45, 0.47, 0.49,
+		0.51, 0.53, 0.55, 0.57,
+		0.61, 0.67, 
+		0.7, 0.75};
+
+	const size_t BETA_P_NUM = 150;
+	const size_t H_OSC_P_NUM = 67; //41;
+	const size_t H_ROT_P_NUM = 201; //101;
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
 	const size_t NUM_OF_THREADS = 8;
-	CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha, NUM_OF_THREADS);
+
+	for (const double alpha : alpha_vec) {
+		CalculateAndWriteToFile<BETA_P_NUM, H_OSC_P_NUM, H_ROT_P_NUM>(alpha, NUM_OF_THREADS);
+	}
 
 //	const Rotation_system obj(0.5, 0.7, 2.5);
 //	CalculateForPoint<Rotation_system, obj.DIM>(obj);
